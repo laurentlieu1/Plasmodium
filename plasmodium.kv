@@ -1,0 +1,229 @@
+#:kivy 2.1.0
+
+<HomePage>:
+    name : "home"
+
+    MDFloatLayout :
+        adaptative_height : True
+        cols: 1
+        size: root.width, root.height
+        
+        
+        MDLabel : 
+            text : "Plasmodium"
+            text_color : "white"
+            font_size : '100sp'
+            font_name : "font_lemon\LEMONMILK-Medium.otf"
+            adaptative_width : True
+            pos_hint : {"x" : 0.275, "y" : 0.2}
+        
+
+        MDFlatButton : 
+            text : "Lancer une capture avec le microscope"
+            font_name : "font_lemon\LEMONMILK-Regular.otf"
+            width: root.width*0.4
+            height: root.height*0.1
+            #font_style : 'Button'
+            md_bg_color : "497174"
+            font_size: "23sp"
+            pos_hint : {"center_x" : 0.5, "y" : 0.45}
+            on_release: app.root.current = "microscope_page"
+                                
+        MDFlatButton : 
+            text: "Calculer le taux d'infection"
+            font_name : "font_lemon\LEMONMILK-Regular.otf"
+            #font_style : 'Button'
+            width: root.width*0.4
+            height: root.height*0.1
+            md_bg_color : "EB6440"
+            font_size: "23sp"  
+            pos_hint : {"center_x" : 0.5, "y" : 0.3}
+            on_release: app.root.current = "infection_page"
+
+            
+<MicroscopePage>:
+    name : "microscope_page"
+    MDFloatLayout :
+        MDLabel:
+            text : "Module microscope"
+            font_name : "font_lemon\LEMONMILK-Regular.otf"
+            font_size : '40sp'
+            pos_hint : {"x" : 0.2, "y" : 0.25}
+
+        MDFlatButton:
+            text : "Retour à l'accueil"
+            width: root.width*0.2
+            height: root.height*0.1
+            md_bg_color : "497174"
+            font_size: "25sp"
+            on_release: app.root.current = "home"
+            pos_hint : {"center_x" : 0.3, "y" : 0.1}
+            
+        MDFlatButton:
+            text : "Lancer le programme microscope.py" 
+            width: root.width*0.3
+            height: root.height*0.1
+            md_bg_color : "497174"
+            font_size: "25sp"  
+            on_press : root.run_microscope()
+            pos_hint : {"center_x" : 0.6, "y" : 0.1}
+        
+<InfectionRatePage>:
+    name : "infection"
+    import_btn : import_btn
+    imported : imported
+    nb_img : nb_img
+
+    btn_r1_c1 : btn_r1_c1
+    btn_r1_c2 : btn_r1_c2
+    btn_r1_c3 : btn_r1_c3
+    btn_r1_c4 : btn_r1_c4
+    btn_r1_c5 : btn_r1_c5
+
+    btn_r2_c1 : btn_r2_c1
+    btn_r2_c2 : btn_r2_c2
+    btn_r2_c3 : btn_r2_c3
+    btn_r2_c4 : btn_r2_c4
+    btn_r2_c5 : btn_r2_c5
+
+    FloatLayout : 
+        #size : (300,300)
+        MDRaisedButton :
+            text : "Calculer le taux d'infection"
+            font_name : "font_lemon\LEMONMILK-Regular.otf"
+            size_hint : (.2,.03)
+            font_size : 0.4*self.height
+            disabled : True
+            disabled_color : "white"
+            md_bg_color_disabled : "EB6440"
+            pos_hint : {"center_x" : 0.15, "y" : 0.9}
+
+        MDFillRoundFlatButton :
+            id : import_btn
+            text : "Importer vos images"
+            font_name : 'louis_george_caf\Louis George Cafe.ttf'
+            md_bg_color : '717171'
+            font_size: 0.4 * self.height
+            size_hint : (.2, .08)
+            pos_hint : {"x" : 0.41, "y" : 0.875} # x part de la gauche à droite et y de bas en haut
+            on_press : root.select_file()
+        
+        Label:
+            id : imported
+            text : ""
+            font_name : 'louis_george_caf\Louis George Cafe.ttf'
+            font_size: 0.5 * self.height
+            size_hint : (.3, .2)
+            pos_hint : {"x" : 0, "y" : 0.62}
+        
+        MDRaisedButton:
+            text : "Retour à l'accueil"  
+            font_name : 'louis_george_caf\Louis George Cafe.ttf'
+            md_bg_color : '497174'
+            font_size: 0.5 * self.height
+            size_hint : (.15, .06)
+            pos_hint : {"x" : 0.43, "y" : 0.04}  
+            on_release: app.root.current = "home" #image folder #retourne image avec label, rapport et liste des % de labels + liste des labels par images
+
+        Label:
+            id : nb_img
+            text : ""
+            font_name : 'louis_george_caf\Louis George Cafe.ttf'
+            font_size: 0.15 * self.height
+            size_hint : (.7, .2)
+            pos_hint : {"x" : 0.16, "y" : 0.705}
+        
+        MDFloatingActionButton :
+            icon : 'chevron-left-circle'
+            #size_hint :(.05, .05)
+            md_bg_color : '717171'
+            pos_hint : {"x" : .05, "y" : 0.52}
+            on_press : root.previous()
+        
+        MDFloatingActionButton : 
+            icon : 'chevron-right-circle'
+            #size_hint : (.05, .05)
+            md_bg_color : '717171'
+            pos_hint : {"x" : .92, "y" : 0.52}
+            on_press : root.next()
+        
+        Button : 
+            id : btn_r1_c1
+            size_hint : (.1, .2)
+            pos_hint : {"x" : 0.16, "y" : 0.55}
+            disabled : True
+            background_disabled_down : ''
+            on_press : root.show_it(btn_r1_c1)
+
+        Button : 
+            id : btn_r1_c2
+            size_hint : (.1, .2)
+            pos_hint : {"x" : 0.31, "y" : 0.55}
+            disabled : True
+            background_disabled_down : ''
+            on_press : root.show_it(btn_r1_c2)
+        
+        Button : 
+            id : btn_r1_c3
+            size_hint : (.1, .2)
+            pos_hint : {"x" : 0.46, "y" : 0.55}
+            disabled : True
+            background_disabled_down : ''
+            on_press : root.show_it(btn_r1_c3)
+        
+        Button : 
+            id : btn_r1_c4
+            size_hint : (.1, .2)
+            pos_hint : {"x" : 0.61, "y" : 0.55}
+            disabled : True
+            background_disabled_down : ''
+            on_press : root.show_it(btn_r1_c4)
+        
+        Button : 
+            id : btn_r1_c5
+            size_hint : (.1, .2)
+            pos_hint : {"x" : 0.76, "y" : 0.55}
+            disabled : True
+            background_disabled_down : ''
+            on_press : root.show_it(btn_r1_c5)
+
+        Button : 
+            id : btn_r2_c1
+            size_hint : (.1, .2)
+            pos_hint : {"x" : 0.16, "y" : 0.34}
+            disabled : True
+            background_disabled_down : ''
+            on_press : root.show_it(btn_r2_c1)
+
+        Button : 
+            id : btn_r2_c2
+            size_hint : (.1, .2)
+            pos_hint : {"x" : 0.31, "y" : 0.34}
+            disabled : True
+            background_disabled_down : ''
+            on_press : root.show_it(btn_r2_c2)
+        
+        Button : 
+            id : btn_r2_c3
+            size_hint : (.1, .2)
+            pos_hint : {"x" : 0.46, "y" : 0.34}
+            disabled : True
+            background_disabled_down : ''
+            on_press : root.show_it(btn_r2_c3)
+        
+        Button : 
+            id : btn_r2_c4
+            size_hint : (.1, .2)
+            pos_hint : {"x" : 0.61, "y" : 0.34}
+            disabled : True
+            background_disabled_down : ''
+            on_press : root.show_it(btn_r2_c4)
+        
+        Button : 
+            id : btn_r2_c5
+            size_hint : (.1, .2)
+            pos_hint : {"x" : 0.76, "y" : 0.34}
+            disabled : True
+            background_disabled_down : ''
+            on_press : root.show_it(btn_r2_c5)
+
