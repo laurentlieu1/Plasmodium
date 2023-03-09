@@ -24,3 +24,5 @@ Librairies à installer :
  - numpy
  - skimage.io
  - json
+ 
+ Lien vers le drive pour le modèle : https://drive.google.com/drive/u/1/folders/13nViVT-kJAV_AspLqJDfGzXYGUpvD-Zv
