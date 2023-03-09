@@ -2,12 +2,10 @@
 
 <HomePage>:
     name : "home"
-
     Image :
-        source : 'esme_logo.png'
+        source : "esme_logo.png"
         size_hint : (.1,.1)
         pos_hint :  {"x" : 0.9, "y" : 0.85}
-
 
     MDFloatLayout :
         adaptative_height : True
@@ -15,26 +13,23 @@
         size: root.width, root.height
 
         Image :
-            source : 'esme_logo.png'
+            source : "esme_logo.png"
             size_hint : (.1,.1)
             pos_hint :  {"x" : 0.9, "y" : 0.85}
-        
         
         MDLabel : 
             text : "Plasmodium"
             text_color : "white"
-            font_size : '100sp'
+            font_size : "100sp"
             font_name : "font_lemon\LEMONMILK-Medium.otf"
             adaptative_width : True
             pos_hint : {"x" : 0.275, "y" : 0.2}
-        
 
         MDFlatButton : 
             text : "Lancer une capture avec le microscope"
             font_name : "font_lemon\LEMONMILK-Regular.otf"
             width: root.width*0.4
             height: root.height*0.1
-            #font_style : 'Button'
             md_bg_color : "497174"
             font_size: "23sp"
             pos_hint : {"center_x" : 0.5, "y" : 0.45}
@@ -43,7 +38,6 @@
         MDFlatButton : 
             text: "Calculer le taux d'infection"
             font_name : "font_lemon\LEMONMILK-Regular.otf"
-            #font_style : 'Button'
             width: root.width*0.4
             height: root.height*0.1
             md_bg_color : "EB6440"
@@ -54,6 +48,7 @@
             
 <MicroscopePage>:
     name : "microscope_page"
+    # Variables utilisées dans "code_principal_md.py" pour la page "MicroscopePage"
     btn_move_left : btn_move_left
     btn_move_right : btn_move_right
     btn_move_up : btn_move_up
@@ -65,15 +60,15 @@
             size_hint: .3, 0.55
             radius: self.height *0.1
             pos_hint : {"x" : 0.051, "y" : 0.17}
-            md_bg_color: '#365f85'
+            md_bg_color: "#365f85"
 
         Image :
-            source : 'esme_logo.png'
+            source : "esme_logo.png"
             size_hint : (.1,.1)
             pos_hint :  {"x" : 0.9, "y" : 0.85}
         
         Image :
-            source : 'Images-Lubumbashi\Images-Plasmodium-Lubumbashi-RDCongo\PL-03.jpg'
+            source : "Images-Lubumbashi\Images-Plasmodium-Lubumbashi-RDCongo\PL-03.jpg"
             size_hint : (.7,.7)
             pos_hint :  {"x" : 0.3, "y" : 0.17}
 
@@ -89,18 +84,16 @@
 
         MDRaisedButton:
             text : "Retour à l'accueil"  
-            font_name : 'louis_george_caf\Louis George Cafe.ttf'
-            md_bg_color : '#497174'
+            font_name : "louis_george_caf\Louis George Cafe.ttf"
+            md_bg_color : "#497174"
             font_size: 0.5 * self.height
             size_hint : (.15, .06)
             pos_hint : {"x" : 0.8, "y" : 0.04}  
             on_release: app.root.current = "home" #image folder #retourne image avec label, rapport et liste des % de labels + liste des labels par images
 
-        
-
         MDFlatButton:
             text : "Connecter le microscope" 
-            font_name : 'louis_george_caf\Louis George Cafe.ttf'
+            font_name : "louis_george_caf\Louis George Cafe.ttf"
             size_hint : (.25, .07)
             md_bg_color : "#365f85"
             font_size: self.height * 0.45 
@@ -123,7 +116,6 @@
             on_press : root.mouv_gauche(1)
             pos_hint : {"x" : 0.076, "y" : 0.39}
             disabled : True
-
 
         MDIconButton :
             id : btn_move_right
@@ -157,24 +149,21 @@
             on_press : root.mouv_bas(1)
             pos_hint : {"x" : 0.17, "y" : 0.21}
             disabled : True
-
-        
+ 
         
 <InfectionRatePage>:
     name : "infection"
+    # Variables utilisées dans "code_principal_md.py" pour la page "InfectionRatePage"
     import_btn : import_btn
     imported : imported
     nb_img : nb_img
-
     btn_previous_viewer : btn_previous_viewer
     btn_next_viewer : btn_next_viewer
-
     btn_r1_c1 : btn_r1_c1
     btn_r1_c2 : btn_r1_c2
     btn_r1_c3 : btn_r1_c3
     btn_r1_c4 : btn_r1_c4
     btn_r1_c5 : btn_r1_c5
-
     btn_r2_c1 : btn_r2_c1
     btn_r2_c2 : btn_r2_c2
     btn_r2_c3 : btn_r2_c3
@@ -182,9 +171,8 @@
     btn_r2_c5 : btn_r2_c5
 
     FloatLayout : 
-        #size : (300,300)
         Image :
-            source : 'esme_logo.png'
+            source : "esme_logo.png"
             size_hint : (.1,.1)
             pos_hint :  {"x" : 0.9, "y" : 0.85}
 
@@ -201,52 +189,50 @@
         MDFillRoundFlatButton :
             id : import_btn
             text : "Importer vos images"
-            font_name : 'louis_george_caf\Louis George Cafe.ttf'
-            md_bg_color : '717171'
+            font_name : "louis_george_caf\Louis George Cafe.ttf"
+            md_bg_color : "717171"
             font_size: 0.4 * self.height
             size_hint : (.2, .08)
-            pos_hint : {"x" : 0.41, "y" : 0.875} # x part de la gauche à droite et y de bas en haut
+            pos_hint : {"x" : 0.41, "y" : 0.875} 
             on_press : root.select_file(None)
         
         Label:
             id : imported
             text : ""
-            font_name : 'louis_george_caf\Louis George Cafe.ttf'
+            font_name : "louis_george_caf\Louis George Cafe.ttf"
             font_size: 0.5 * self.height
             size_hint : (.3, .2)
             pos_hint : {"x" : 0, "y" : 0.62}
         
         MDRaisedButton:
             text : "Retour à l'accueil"  
-            font_name : 'louis_george_caf\Louis George Cafe.ttf'
-            md_bg_color : '497174'
+            font_name : "louis_george_caf\Louis George Cafe.ttf"
+            md_bg_color : "497174"
             font_size: 0.5 * self.height
             size_hint : (.15, .06)
             pos_hint : {"x" : 0.43, "y" : 0.04}  
-            on_release: app.root.current = "home" #image folder #retourne image avec label, rapport et liste des % de labels + liste des labels par images
+            on_release: app.root.current = "home"
 
         Label:
             id : nb_img
             text : ""
-            font_name : 'louis_george_caf\Louis George Cafe.ttf'
+            font_name : "louis_george_caf\Louis George Cafe.ttf"
             font_size: 0.15 * self.height
             size_hint : (.7, .2)
             pos_hint : {"x" : 0.16, "y" : 0.705}
         
         MDFloatingActionButton :
             id : btn_previous_viewer
-            icon : 'chevron-left-circle'
-            #size_hint :(.05, .05)
-            md_bg_color : '717171'
+            icon : "chevron-left-circle"
+            md_bg_color : "717171"
             pos_hint : {"x" : .05, "y" : 0.52}
             disabled : True
             on_press : root.previous()
         
         MDFloatingActionButton : 
             id : btn_next_viewer
-            icon : 'chevron-right-circle'
-            #size_hint : (.05, .05)
-            md_bg_color : '717171'
+            icon : "chevron-right-circle"
+            md_bg_color : "717171"
             pos_hint : {"x" : .92, "y" : 0.52}
             disabled : True
             on_press : root.next()
@@ -256,78 +242,78 @@
             size_hint : (.1, .2)
             pos_hint : {"x" : 0.16, "y" : 0.55}
             disabled : True
-            background_disabled_down : ''
-            on_press : root.show_it(btn_r1_c1)
+            background_disabled_down : ""
+            on_press : root.popup_image(btn_r1_c1)
 
         Button : 
             id : btn_r1_c2
             size_hint : (.1, .2)
             pos_hint : {"x" : 0.31, "y" : 0.55}
             disabled : True
-            background_disabled_down : ''
-            on_press : root.show_it(btn_r1_c2)
+            background_disabled_down : ""
+            on_press : root.popup_image(btn_r1_c2)
         
         Button : 
             id : btn_r1_c3
             size_hint : (.1, .2)
             pos_hint : {"x" : 0.46, "y" : 0.55}
             disabled : True
-            background_disabled_down : ''
-            on_press : root.show_it(btn_r1_c3)
+            background_disabled_down : ""
+            on_press : root.popup_image(btn_r1_c3)
         
         Button : 
             id : btn_r1_c4
             size_hint : (.1, .2)
             pos_hint : {"x" : 0.61, "y" : 0.55}
             disabled : True
-            background_disabled_down : ''
-            on_press : root.show_it(btn_r1_c4)
+            background_disabled_down : ""
+            on_press : root.popup_image(btn_r1_c4)
         
         Button : 
             id : btn_r1_c5
             size_hint : (.1, .2)
             pos_hint : {"x" : 0.76, "y" : 0.55}
             disabled : True
-            background_disabled_down : ''
-            on_press : root.show_it(btn_r1_c5)
+            background_disabled_down : ""
+            on_press : root.popup_image(btn_r1_c5)
 
         Button : 
             id : btn_r2_c1
             size_hint : (.1, .2)
             pos_hint : {"x" : 0.16, "y" : 0.34}
             disabled : True
-            background_disabled_down : ''
-            on_press : root.show_it(btn_r2_c1)
+            background_disabled_down : ""
+            on_press : root.popup_image(btn_r2_c1)
 
         Button : 
             id : btn_r2_c2
             size_hint : (.1, .2)
             pos_hint : {"x" : 0.31, "y" : 0.34}
             disabled : True
-            background_disabled_down : ''
-            on_press : root.show_it(btn_r2_c2)
+            background_disabled_down : ""
+            on_press : root.popup_image(btn_r2_c2)
         
         Button : 
             id : btn_r2_c3
             size_hint : (.1, .2)
             pos_hint : {"x" : 0.46, "y" : 0.34}
             disabled : True
-            background_disabled_down : ''
-            on_press : root.show_it(btn_r2_c3)
+            background_disabled_down : ""
+            on_press : root.popup_image(btn_r2_c3)
         
         Button : 
             id : btn_r2_c4
             size_hint : (.1, .2)
             pos_hint : {"x" : 0.61, "y" : 0.34}
             disabled : True
-            background_disabled_down : ''
-            on_press : root.show_it(btn_r2_c4)
+            background_disabled_down : ""
+            on_press : root.popup_image(btn_r2_c4)
         
         Button : 
             id : btn_r2_c5
             size_hint : (.1, .2)
             pos_hint : {"x" : 0.76, "y" : 0.34}
             disabled : True
-            background_disabled_down : ''
-            on_press : root.show_it(btn_r2_c5)
+            background_disabled_down : ""
+            on_press : root.popup_image(btn_r2_c5)
 
