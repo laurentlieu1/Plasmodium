@@ -4,7 +4,7 @@ Config.set("input", "mouse", "mouse,disable_multitouch")
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.image import Image as kivyim
-from kivymd.uix.button import MDFillRoundFlatButton, MDRectangleFlatIconButton,MDRaisedButton
+from kivymd.uix.button import MDFillRoundFlatButton, MDRectangleFlatIconButton,MDRaisedButton, MDFloatingActionButton
 from kivy.uix.label import Label
 from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -17,6 +17,11 @@ from plyer import filechooser
 from PIL import Image
 import os.path
 import os
+from fpdf import FPDF
+from time import strftime
+from datetime import datetime
+import json
+
 
 from model import *
 
@@ -130,6 +135,9 @@ class InfectionRatePage(Screen):
         filechooser.choose_dir(on_selection=self.analyse_folder)   
 
     def analyse_folder(self, folder): 
+        self.date_time = datetime.now()
+        self.date = self.date_time.strftime("%Y-%m-%d") # on récupère la date et l'heure
+        self.heure = self.date_time.strftime("%H:%M:%S")
 
         try: 
             global folder_path
@@ -138,7 +146,7 @@ class InfectionRatePage(Screen):
 
             # Détection automatique des parasites avec le modèle de Machine Learning
             # Retourne un répertoire des images annotées et d'un fichier d'annotations .json
-            folder_path = inference_on_folder(folder[0], model) 
+            folder_path, self.numero = inference_on_folder(folder[0], model) 
             self.count_labels_in_total()
 
             if (len(os.listdir(folder_path))!=0):
@@ -146,6 +154,8 @@ class InfectionRatePage(Screen):
                 self.resize_img()
                 self.start = 0 # Variable pour connaître savoir quelle image est affichée en première dans le caroussel
                 self.display_images(0.4)
+                self.infection_rate()
+                self.change_json("", "", self.rate, self.total_parasites_count, self.total_distractors_count)
                 return "Unzip_selected successful"
             return "Unzip_selected failed"
         
@@ -227,7 +237,46 @@ class InfectionRatePage(Screen):
                                              disabled_color="white", 
                                              md_bg_color_disabled="717171", 
                                              pos_hint={"center_x": 0.65, "y": 0.15}))
+        self.add_widget(MDFloatingActionButton(icon = "help",
+                                               size_hint =(.027,.05),  
+                                               pos_hint={"x": 0.86, "y": 0.22}, 
+                                               on_press = self.help))
         self.add_widget(self.infection_btn)
+
+    def help(self, instance):
+        self.box=FloatLayout()
+        
+        self.close_btn=(MDFillRoundFlatButton(text="Fermer", 
+                                        font_size=self.height*0.03, 
+                                        size_hint=(.09, .07), 
+                                        pos_hint={"x":0.4,"y":0.03}))
+        self.box.add_widget(self.close_btn)
+        self.box.add_widget(Label(text = "+ = 1–10 parasites pour 100 champs de la goutte épaisse à l’objectif à immersion",
+                                  font_size=self.height*0.025,
+                                  size_hint=(.2, .07), 
+                                  pos_hint={"x":0.4,"y":0.85}))
+        self.box.add_widget(Label(text = "++ = 11–100 parasites pour 100 champs de la goutte épaisse à l’objectif à immersion", 
+                                  font_size=self.height*0.025,
+                                  size_hint=(.2, .07), 
+                                  pos_hint={"x":0.4,"y":0.65}))
+        self.box.add_widget(Label(text = "+++ = 1–10 parasites par champ de la goutte épaisse à l’objectif à immersion", 
+                                  font_size=self.height*0.025,
+                                  size_hint=(.2, .07), 
+                                  pos_hint={"x":0.4,"y":0.45}))
+        self.box.add_widget(Label(text = "++++ = plus de 10 parasites par champ de la goutte épaisse à l’objectif à immersion", 
+                                  font_size=self.height*0.025,
+                                  size_hint=(.2, .07), 
+                                  pos_hint={"x":0.4,"y":0.25}))
+
+        self.help_pop = Popup(title="Aide",
+                              content=self.box, 
+                              size_hint=(None,None),
+                              size=(900,400),
+                              auto_dismiss=False,
+                              title_size=15)
+    
+        self.close_btn.bind(on_press=self.help_pop.dismiss)
+        self.help_pop.open()
     
     def display_images(self, x_pos):   
         self.btn_next_viewer.disabled = False
@@ -265,7 +314,7 @@ class InfectionRatePage(Screen):
                 self.list_btn[i].background_normal = ""
                 self.list_btn[i].disabled = True
         
-        self.infection_rate()
+    
         self.btn_enabled = -1 # Car les indices d'une liste commence à 0
         for btn in self.list_btn: 
             if not btn.disabled:
@@ -422,16 +471,103 @@ class InfectionRatePage(Screen):
         print(f"Nombre de parasites par champ: {total_normalized/100}")            
         if total_normalized >= 1 and total_normalized <= 9: 
             self.infection_btn.text = "Taux d'infection: +"
+            self.rate = "+"
             return 1
         elif (total_normalized/10) >= 1 and (total_normalized/10) <= 9: 
             self.infection_btn.text = "Taux d'infection: ++"
+            self.rate = "++"
             return 2
         elif (total_normalized/100) >= 1 and (total_normalized/100) <= 9: 
             self.infection_btn.text = "Taux d'infection: +++"
+            self.rate = "+++"
             return 3
         elif (total_normalized/100) >= 10: 
             self.infection_btn.text = "Taux d'infection: ++++"
-            return 4          
+            self.rate = "++++"
+            return 4     
+        elif total_normalized ==0:
+            self.infection_btn.text = "Négatif à la malaria"
+            self.rate = "-"
+            return 5
+
+    def create_pdf(self, numero, date, heure) :
+        if os.path.exists("resultats_pdf") == False: 
+            os.mkdir("resultats_pdf") 
+
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=25)
+        pdf.cell(200, 15, txt="RAPPORT DE TEST MALARIA", ln=1, align="C")
+        
+        pdf.set_font("Arial", size=40)
+        pdf.cell(200, 30, txt=f'ID : {numero}', ln = 1, align ="C")
+        pdf.set_font("Arial", size=15)
+        pdf.cell(200, 10, txt=f"Nom du patient : ", ln = 1, align ="L")
+        pdf.cell(200, 10, txt=f"Date d'analyse : {date}", ln = 1, align ="L")
+        pdf.cell(200, 10, txt=f"Heure d'analyse : {heure}", ln = 1, align ="L")
+        pdf.cell(200, 10, txt=f"Nom de l'opérateur : ", ln = 1, align ="L")
+        pdf.cell(200, 10, txt=f"Modèle d'appareil : Olympus", ln = 1, align ="L")
+
+        pdf.cell(200, 15, txt=f"", ln = 1, align ="L")
+
+        pdf.set_font("Arial", size=20)
+        pdf.cell(200, 20, txt=f"\nRESULTATS D'ANALYSE", ln = 1, align = "C")
+        pdf.set_font("Arial", size=30)
+        if self.rate != "-" :
+            pdf.cell(200, 20, txt=f"\nTaux d'infection : {self.rate}", ln = 1, align = "C")
+        else :
+            pdf.cell(200, 20, txt=f"\nTaux d'infection : NEGATIF", ln = 1, align = "C")
+        pdf.set_font("Arial", size=15)
+        pdf.cell(200, 15, txt=f"\nNombre de parasites sur 100 champs de vue : {self.total_parasites_count}", ln = 1, align = "L")
+        pdf.cell(200, 10, txt=f"\nNombre de distracteurs sur 100 champs de vue : {self.total_distractors_count}", ln = 1, align = "L")
+
+        pdf.cell(200, 30, txt=f"", ln = 1, align ="L")
+
+        pdf.set_font("Arial", size=14)
+        pdf.cell(200, 15, txt=f"\nTableau de lecture du taux d'infection", ln = 1, align = "L")
+        pdf.set_font("Arial", size=12)
+        pdf.cell(200, 10, txt=f"\n+ = 1 à 10 parasites pour 100 champs de la goutte épaisse à l'objectif à immersion", ln = 1, align = "L")
+        pdf.cell(200, 10, txt=f"\n++ = 11 à 100 parasites pour 100 champs de la goutte épaisse à l'objectif à immersion", ln = 1, align = "L")
+        pdf.cell(200, 10, txt=f"\n+++ = 1 à 10 parasites par champ de la goutte épaisse à l'objectif à immersion", ln = 1, align = "L")
+        pdf.cell(200, 10, txt=f"\n++++ = plus de 10 parasites par champ de la goutte épaisse à l'objectif à immersion", ln = 1, align = "L")
+        
+        pdf.output(f"resultats_pdf\{numero}.pdf")     
+
+        
+
+    def change_json(self, nom_patient, nom_operateur, rate, total_parasites, total_distractors):
+
+        new_patient = {
+            "id": "",
+            "nom_patient": nom_patient, 
+            "date_analyse": self.date, 
+            "heure_analyse": self.heure,
+            "nom_operateur": nom_operateur,
+            "rate": rate,
+            "total_ parasites": total_parasites,
+            "total_distractors": total_distractors            
+            }
+        
+        try:
+            with open("patients.json", 'r') as fp : 
+                patients_json_dict = json.load(fp)
+                new_patient.update({"id": self.numero})
+                patients_json_dict.append(new_patient)
+            with open("patients.json", 'w') as json_file:
+                json.dump(patients_json_dict, json_file, 
+                        indent=4,  
+                        separators=(',',': '))
+            
+        except FileNotFoundError:
+            print('Sorry the file we\'re looking for doesn\' exist')
+            with open("patients.json", 'w') as json_file:
+                new_patient.update({"id": self.numero})
+                json.dump([new_patient], json_file, 
+                        indent=4,  
+                        separators=(',',': '))
+                
+        self.create_pdf(self.numero, self.date, self.heure)
+        
     pass
 
     
