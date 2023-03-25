@@ -33,4 +33,6 @@ Un patient est défini en fonction de la date d'analyse par son identifiant qui 
 Le compteur est incrémenté de 1 à chaque fois qu'une analyse est réalisée. 
 L'identifiant est le nom du répertoire des images annotés du patient et le nom du pdf dans lequel on retrouve les résultats de l'analyse.
 
+Le lien vers les modèles qui sont au format .pth et qui sont dans le répertoire model_folder : https://drive.google.com/drive/u/1/folders/13nViVT-kJAV_AspLqJDfGzXYGUpvD-Zv
+
 !! Ne pas renommer le fichier "patients.json", les répertoires "output" et "resultats_pdf"
