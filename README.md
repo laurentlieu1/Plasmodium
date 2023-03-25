@@ -36,5 +36,5 @@ L'identifiant est le nom du répertoire des images annotés du patient et le nom
 
 Le lien vers le modèle : https://drive.google.com/drive/u/1/folders/13nViVT-kJAV_AspLqJDfGzXYGUpvD-Zv
 Les modèles sont dans le répertoire model_folder
-
+Le code utilisé pour entraîner le modèle se situe dans model.ipynb
 Les noms de modèles correspondent à la date à laquelle l'entraînement a été effectués et sont au format .pth
