@@ -479,7 +479,7 @@ class InfectionRatePage(Screen):
         print(f"Nombre de parasites par 100 champs: {total_normalized}")
         print(f"Nombre de parasites par 10 champs: {total_normalized/10}")
         print(f"Nombre de parasites par champ: {total_normalized/100}")            
-        if total_normalized >= 1 and total_normalized <= 10: 
+        if total_normalized >= 1 and total_normalized < 11: 
             self.infection_btn.text = "Taux d'infection: +"
             self.rate = "+"
             self.btn_pdf.bind(state=self.create_pdf)
@@ -489,7 +489,7 @@ class InfectionRatePage(Screen):
             self.rate = "++"
             self.btn_pdf.bind(state=self.create_pdf)
             return 2
-        elif (total_normalized/100) >= 1 and (total_normalized/100) <= 9: 
+        elif (total_normalized/100) >= 1 and (total_normalized/100) < 10: 
             self.infection_btn.text = "Taux d'infection: +++"
             self.rate = "+++"
             self.btn_pdf.bind(state=self.create_pdf)
@@ -606,6 +606,6 @@ def delete_folder(folder_to_delete):
 if __name__ == "__main__": 
     Window.maximize() 
     global model 
-    model = load_model("model.pth") # Chargement du modèle de Machine Learning
+    model = load_model("model01032023.pth") # Chargement du modèle de Machine Learning
     MainApp().run()
     delete_folder(resized_path) # Libérer de l'espace en supprimant le fichier resize en fermant l'application

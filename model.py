@@ -26,7 +26,7 @@ def load_model(filename) :
     cfg = get_cfg() #Crée un fichier de configuration
     cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml")) #Récupère l'architecture du modèle
     #cfg.MODEL.DEVICE = "cpu" #Décommentez ceci si vous n'avez pas de GPU Cuda
-    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 8 #Nombre de classes + 1 pour le background
+    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 2 #Nombre de classes + 1 pour le background
     cfg.MODEL.WEIGHTS = filename #Chargement des poids
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5 #Seuil de décision
     predictor = DefaultPredictor(cfg) #Création du prédicteur
@@ -68,7 +68,7 @@ def inference_on_folder(folder, model) :
     for file in os.listdir(folder) : #Parcourt le dossier
         if ".jpg" in file :
             try :
-                print(folder_name)
+                #print(folder_name)
                 filename = folder + '/' + file  #Construction de la ligne de chemin vers le fichier
                 #print(filename)
 
@@ -103,7 +103,6 @@ def inference_on_folder(folder, model) :
                 #Sauvegarde de l'image
                 
                 file_path = os.path.join(folder_path, file)
-                print("file path :", file_path)
                 if not cv2.imwrite(file_path, img) : #Si l'image n'a pas pu être sauvegardé => Exception
                     raise Exception
                 
@@ -111,7 +110,6 @@ def inference_on_folder(folder, model) :
                 print(error)
 
     json_path = os.path.join(folder_path, "result.json")
-    print(json_path)
     with open(json_path, "w") as f : #Ecriture dans le fichier JSON
         json.dump(dict, f, indent=2)
     #print(dict)
